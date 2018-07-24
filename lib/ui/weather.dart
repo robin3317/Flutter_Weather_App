@@ -52,16 +52,8 @@ class _WeatherUpdateState extends State<WeatherUpdate> {
           ),
           //this container will contain the actual data
           new Container(
-            alignment:Alignment.center,
-            margin: const EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 180.0),
-            child: new Text(
-              "45.5F",
-              style: new TextStyle(
-                fontSize: 28.90,
-                fontWeight: FontWeight.bold,
-                color: Colors.white
-              ),
-            ),
+            margin: const EdgeInsets.fromLTRB(80.0, 50.0, 10.0, 10.0),
+            child: updateWidget("Dhaka")
           ) 
         ],
       )
@@ -73,6 +65,35 @@ class _WeatherUpdateState extends State<WeatherUpdate> {
     http.Response response = await http.get(apiUrl);
     return json.decode(response.body);
   }
+  Widget updateWidget(String city) {
+    return new FutureBuilder(
+      future: getWeather(appId, city),
+      builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
+        if (snapshot.hasData) {
+          Map content = snapshot.data;
+          return new Container(
+            child: new Column(
+              children: <Widget>[
+                new ListTile(
+                  title: new Text(
+                    "${content['main']['temp'].toString()} C",
+                    style: new TextStyle(
+                      color: Colors.white,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.w400
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        }else {
+          return new Container();
+        }
+      },
+    );
+  }//updateWidget
+  
 }
 
 //text style
