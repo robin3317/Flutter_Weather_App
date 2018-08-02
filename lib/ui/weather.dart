@@ -15,9 +15,21 @@ class WeatherUpdate extends StatefulWidget {
 class _WeatherUpdateState extends State<WeatherUpdate> {
 
 //get data and print it on the console
-  void showData() async {
-    Map data = await getWeather(appId, defaultCity);
-    print(data.toString());
+  // void showData() async {
+  //   Map data = await getWeather(appId, defaultCity);
+  //   print(data.toString());
+  // }
+  Future _goToChangeCity(BuildContext context) async {
+    Map results = await Navigator.of(context).push(
+      new MaterialPageRoute<Map>(
+        builder: (BuildContext context) {
+          return new ChageCity();
+        }
+      )
+    );
+    if (results != null && results.containsKey("city")) {
+      debugPrint(results['city']);
+    }
   }
 
   @override
@@ -29,8 +41,8 @@ class _WeatherUpdateState extends State<WeatherUpdate> {
         backgroundColor: Colors.red,
         actions: <Widget>[
           new IconButton(
-            icon: new Icon(Icons.menu),
-            onPressed: showData,
+            icon: new Icon(Icons.search),
+            onPressed: () => _goToChangeCity(context),
           )
         ],
       ),
@@ -94,6 +106,64 @@ class _WeatherUpdateState extends State<WeatherUpdate> {
     );
   }//updateWidget
   
+}
+//change city class
+class ChageCity extends StatelessWidget {
+
+  final _cityFieldController = new TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Change City"),
+        centerTitle: true,
+        backgroundColor: Colors.red,
+      ),
+      body: new Stack(
+        children: <Widget>[
+          new Center(
+            child: new Image.asset(
+              'images/image1.jpg', 
+              fit: BoxFit.fill,
+              width: double.infinity,
+              height: double.infinity,
+            ),
+          ),
+          new ListView(
+            children: <Widget>[
+              new ListTile(
+                title: new TextField(
+                  decoration: new InputDecoration(
+                    hintText: "Enter City"
+                  ),
+                  controller: _cityFieldController,
+                  keyboardType: TextInputType.text,
+                ),
+              ),
+              new ListTile(
+                title: new FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context, {
+                      "city": _cityFieldController.text
+                    });
+                  },
+                  child: new Text(
+                    "Get Weather",
+                    style: new TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,             
+                    ),
+                  ),
+                  color: Colors.redAccent,
+                ),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
 }
 
 //text style
